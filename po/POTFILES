@@ -1,0 +1,7 @@
+data/net.curioussavage.simplefilemanager.desktop.in
+data/net.curioussavage.simplefilemanager.appdata.xml.in
+data/net.curioussavage.simplefilemanager.gschema.xml
+src/window.ui
+src/main.py
+src/window.py
+

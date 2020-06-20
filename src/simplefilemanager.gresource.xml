@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/net/curioussavage/simplefilemanager">
+    <file>window.ui</file>
+    <file>file_widget.ui</file>
+  </gresource>
+</gresources>
