@@ -8,7 +8,8 @@
         "--share=network",
         "--share=ipc",
         "--socket=fallback-x11",
-        "--socket=wayland"
+        "--socket=wayland",
+        "--filesystem=host"
     ],
     "cleanup" : [
         "/include",
@@ -22,20 +23,6 @@
         "*.a"
     ],
     "modules" : [
-            {
-            "name": "libhandy",
-            "buildsystem": "meson",
-            "config-opts": [
-                "--buildtype=release"
-            ],
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://gitlab.gnome.org/GNOME/libhandy",
-                    "tag": "0.81.0"
-                }
-            ]
-        },
         {
             "name" : "simplefilemanager",
             "builddir" : true,

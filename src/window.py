@@ -35,15 +35,15 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
         super().__init__(**kwargs)
 
         self.change_dir(Path.home())
+        self.go_up.connect('clicked', self.go_up_handler)
 
-    def go_up(self, w):
-        self.selected_dir =
+    def go_up_handler(self, w):
+        self.change_dir(self.selected_dir.parent)
 
     def change_dir(self, path):
         self.selected_dir = Path(path)
         self.header_bar.set_title(self.selected_dir.name)
 
-        #import pdb; pdb.set_trace()
         self.file_grid.foreach(lambda child: self.file_grid.remove(child))
         #self.file_grid.remove_column(3)
         #self.file_grid.remove_column(2)
@@ -55,6 +55,8 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
         row = []
 
         for file in files:
+            if file.name.startswith('.'): #  TODO check setting here
+                continue
             #TODO actually sort them
             if len(row) == 3:
                 sorted_files.append(row.copy())
@@ -64,7 +66,6 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
 
 
         for row_num, row in enumerate(sorted_files):
-            #import pdb; pdb.set_trace()
             for file_num, file in enumerate(row):
                 file_widget = FileWidget(file, self)
                 #self.file_grid.add(file_widget)
