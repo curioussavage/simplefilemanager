@@ -18,7 +18,7 @@ class FileWidget(Gtk.EventBox):
         self.window = window
 
         self.long_press = Gtk.GestureLongPress.new(self)
-        self.long_press.set_property('delay_factor', 1.5)
+        self.long_press.set_property('delay_factor', 1.1)
         self.long_press.connect('pressed', self.handle_long_pressed)
         self.multi_press = Gtk.GestureMultiPress.new(self)
         self.multi_press.connect('released', self.handle_multi_released)
