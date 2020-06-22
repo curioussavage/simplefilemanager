@@ -23,6 +23,7 @@ import shutil
 
 from pathlib import Path
 from .file_widget import FileWidget
+from .modal_dialog import ModalDialog
 
 mimetypes.init()
 
@@ -110,6 +111,7 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
                 print('could not move file')
             print('moved')
         self.cancel_action(None)
+        self.change_dir(self.selected_dir)
 
     def move_handler(self, w):
         self.enable_modify_mode('move')
@@ -119,8 +121,27 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
         self.enable_modify_mode('copy')
         self.main_stack.set_visible_child(self.file_view)
 
+    def delete_file(self):
+        try:
+            if self.details_path.is_file():
+                os.remove(self.details_path)
+            else:
+                #TODO os.rmdir for empty dir
+                shutil.rmtree(self.details_path)
+        except Exception as e:
+            print(e)
+
     def delete_handler(self, w):
-        pass
+        x = ModalDialog(self)
+
+        def del_fn(w):
+            self.delete_file()
+            self.change_dir(self.selected_dir)
+            self.go_back_handler(None)
+
+        x.connect('yes_clicked', del_fn)
+        # TODO use trash and implement undo
+        x.show()
 
     def go_back_handler(self, w):
         self.go_back.hide()

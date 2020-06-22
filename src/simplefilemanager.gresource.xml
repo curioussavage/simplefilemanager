@@ -3,5 +3,6 @@
   <gresource prefix="/net/curioussavage/simplefilemanager">
     <file>window.ui</file>
     <file>file_widget.ui</file>
+    <file>modal_dialog.ui</file>
   </gresource>
 </gresources>
