@@ -79,9 +79,6 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
         self.header_bar.set_title(self.selected_dir.name)
 
         self.file_grid.foreach(lambda child: self.file_grid.remove(child))
-        #self.file_grid.remove_column(3)
-        #self.file_grid.remove_column(2)
-        #self.file_grid.remove_column(1)
 
         files = os.scandir(self.selected_dir)
 
@@ -92,17 +89,19 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
             if file.name.startswith('.'): #  TODO check setting here
                 continue
             #TODO actually sort them
+
             if len(row) == 3:
                 sorted_files.append(row.copy())
                 row.clear()
 
             row.append(file)
-
+        if len(row):
+            sorted_files.append(row)
 
         for row_num, row in enumerate(sorted_files):
             for file_num, file in enumerate(row):
+                print(file_num)
                 file_widget = FileWidget(file, self)
-                #self.file_grid.add(file_widget)
                 self.file_grid.attach(file_widget, file_num, row_num, 1, 1)
 
 
