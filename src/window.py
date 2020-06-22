@@ -58,6 +58,7 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
     modify_action_bar = Gtk.Template.Child()
     cancel_action_btn = Gtk.Template.Child()
     action_btn = Gtk.Template.Child()
+    action_path = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -75,9 +76,10 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
 
     def enable_modify_mode(self, modify_type):
         self.modify_mode = True
+        self.modify_path = self.details_path
         self.modify_type = modify_type
         self.action_btn.set_label(modify_type + ' here')
-        self.modify_path = self.details_path
+        self.action_path.set_text( self.modify_path.name)
 
         self.modify_action_bar.show()
 
