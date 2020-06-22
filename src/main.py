@@ -29,6 +29,7 @@ class Application(Gtk.Application):
     def __init__(self):
         super().__init__(application_id='net.curioussavage.simplefilemanager',
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
+        self._settings = Gio.Settings.new('net.curioussavage.simplefilemanager')
 
     def do_activate(self):
         win = self.props.active_window

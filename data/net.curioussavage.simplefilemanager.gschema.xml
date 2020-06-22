@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="simplefilemanager">
 	<schema id="net.curioussavage.simplefilemanager" path="/net/curioussavage/simplefilemanager/">
+      <key type="b" name="show-hidden-files">
+          <default>false</default>
+          <summary>Show hidden files</summary>
+          <description>When enabled will show hidden files and folders in the files list</description>
+      </key>
 	</schema>
 </schemalist>
