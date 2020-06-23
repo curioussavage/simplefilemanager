@@ -25,6 +25,8 @@ from pathlib import Path
 from .file_widget import FileWidget
 from .modal_dialog import ModalDialog
 
+from .lib import du
+
 mimetypes.init()
 
 @Gtk.Template(resource_path='/net/curioussavage/simplefilemanager/window.ui')
@@ -55,6 +57,7 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
     move_btn = Gtk.Template.Child()
     copy_btn = Gtk.Template.Child()
     delete_btn = Gtk.Template.Child()
+    rename_btn = Gtk.Template.Child()
 
     modify_action_bar = Gtk.Template.Child()
     cancel_action_btn = Gtk.Template.Child()
@@ -78,9 +81,31 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
         self.move_btn.connect('clicked', self.move_handler)
         self.copy_btn.connect('clicked', self.copy_handler)
         self.delete_btn.connect('clicked', self.delete_handler)
+        self.rename_btn.connect('clicked', self.rename_handler)
+
+        self.details_file_name.connect('changed', self.handle_file_name_change)
+        self.details_file_name.connect('activate', self.rename_handler)
+
 
         self.cancel_action_btn.connect('clicked', self.cancel_action)
         self.action_btn.connect('clicked', self.do_file_action)
+
+    def handle_file_name_change(self, w):
+        old = self.details_path.name
+        new = self.details_file_name.get_text()
+        if old != new:
+            self.rename_btn.show()
+        else:
+            self.rename_btn.hide()
+
+
+    def rename_handler(self, w):
+        # update name
+        old = self.details_path.name
+        text = self.details_file_name.get_text()
+        if old != text:
+            x = Path(self.details_path)
+            x.rename(x.with_name(text))
 
     def toggle_view_hidden(self, w):
         val = self.settings.get_value('show-hidden-files')
@@ -120,20 +145,31 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
             print('copied files')
         elif self.modify_type == 'move':
             try:
-                shutil.move(self.modify_path, self.selected_dir)
-            except Exception:
+                shutil.move(self.modify_path.path, self.selected_dir)
+            except Exception as e:
                 print('could not move file')
-            print('moved')
+                print(e)
         self.cancel_action(None)
         self.change_dir(self.selected_dir)
 
     def move_handler(self, w):
         self.enable_modify_mode('move')
-        self.main_stack.set_visible_child(self.file_view)
+        self.change_page('files')
 
     def copy_handler(self, w):
         self.enable_modify_mode('copy')
-        self.main_stack.set_visible_child(self.file_view)
+        self.change_page('files')
+
+    def change_page(self, page):
+        if page == 'files':
+            self.main_stack.set_visible_child(self.file_view)
+            self.go_back.hide()
+            self.go_up.show()
+        elif page == 'detail':
+            self.main_stack.set_visible_child(self.detail_view)
+            self.go_back.show()
+            self.go_up.hide()
+
 
     def delete_file(self):
         try:
@@ -150,7 +186,6 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
 
         def del_fn(w):
             self.delete_file()
-            self.change_dir(self.selected_dir)
             self.go_back_handler(None)
 
         x.connect('yes_clicked', del_fn)
@@ -158,25 +193,26 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
         x.show()
 
     def go_back_handler(self, w):
-        self.go_back.hide()
-        self.go_up.show()
-        self.main_stack.set_visible_child(self.file_view)
+        self.change_page('files')
+        self.change_dir(self.selected_dir)
 
     def open_detail_view(self, path):
         self.details_path = path
+        self.details_file_name.set_property('has_focus', False)
         self.go_up.hide()
         stat_res = path.stat()
         self.details_file_name.set_text(path.name)
         type = 'folder'
         if path.is_file():
-            ext = path.name.split('.')[1]
-            type = mimetypes.types_map.get('.' + ext)
+            ext = Path(path).suffix
+            type = mimetypes.types_map.get(ext)
             if not type:
                 type = 'unknown'
         self.details_file_type.set_text(type)
         self.details_file_size.set_text(str(stat_res.st_size) + ' bytes')
-        self.main_stack.set_visible_child(self.detail_view)
-        self.go_back.show()
+        self.details_file_size.set_text(du(path.path))
+
+        self.change_page('detail')
 
     def go_up_handler(self, w):
         self.change_dir(self.selected_dir.parent)
@@ -210,7 +246,3 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
                 file_widget = FileWidget(file, self)
                 self.file_grid.attach(file_widget, file_num, row_num, 1, 1)
 
-
-
-
-        

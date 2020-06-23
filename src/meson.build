@@ -31,6 +31,7 @@ simplefilemanager_sources = [
   'window.py',
   'file_widget.py',
   'modal_dialog.py',
+  'lib.py',
 ]
 
 install_data(simplefilemanager_sources, install_dir: moduledir)
