@@ -40,6 +40,7 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
     modify_path = None
 
     toggle_hidden = Gtk.Template.Child()
+    new_folder_btn = Gtk.Template.Child()
     file_grid = Gtk.Template.Child()
     header_bar = Gtk.Template.Child()
     go_up = Gtk.Template.Child()
@@ -73,6 +74,7 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
         self.toggle_hidden.set_active(self.settings.get_boolean("show-hidden-files"))
 
         self.toggle_hidden.connect('toggled', self.toggle_view_hidden)
+        self.new_folder_btn.connect('clicked', self.show_new_folder_dialog)
 
         self.change_dir(Path.home())
         self.go_up.connect('clicked', self.go_up_handler)
@@ -89,6 +91,9 @@ class SimplefilemanagerWindow(Gtk.ApplicationWindow):
 
         self.cancel_action_btn.connect('clicked', self.cancel_action)
         self.action_btn.connect('clicked', self.do_file_action)
+
+    def show_new_folder_dialog(self, w):
+        pass
 
     def handle_file_name_change(self, w):
         old = self.details_path.name
